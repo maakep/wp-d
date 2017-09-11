@@ -1,0 +1,112 @@
+EXPLAIN
+
+Transpiler, transpilation
+default parameters are es6, browser only support es5. We use transpiler to transpile our code to browser-supported code.
+
+combine files to minimize requests
+minify files to lower size
+transpile
+lint
+
+loaders
+send file to loader, output another file
+
+webpack recommends using npm
+
+needs module system (amd, commonjs, es6 modules)
+  allows us to create scopes which requires us to import stuff to use it instead of everything being available globally
+  http://exploringjs.com/es6/ch_modules.html
+
+
+
+SHOW:
+
+-init (create package.json) & install 
+>npm init
+>npm install webpack
+
+-create folders:
+  code/index.html
+  code/app.js
+  code/bundle/
+
+> webpack code/app.js code/bundle/bundle.js
+
+
+-Create webpack.config.js
+  module.exports = {
+    entry: "./code/app.js",
+    output: {
+      filename: "./code/bundle/bundle.js"
+    }
+  }
+
+
+-Watch mode
+  webpack --watch
+
+or
+
+  module.exports = {
+    watch: true
+  }
+
+-dev server
+protocol differences: http:// vs file:///
+>npm install webpack-dev-server -g
+>webpack-dev-server
+localhost:8080
+show hot reload
+
+Multiple files?
+  If one specified it will take that one and all files that requires (and the ones the required files requires)
+  Can be specified as an array, then all those entry files will run and their required files.
+  Will not process same file twice.
+
+
+Loaders
+  Webpack knows how to load javascript, how to bundle and minify but not much more.
+  With Loaders we can learn webpack new things
+
+Let's add Babel to convert es6 to es5 so we can use the es6 but still let the browser run it
+
+npm install babel-core babel-loader babel-preset-es2015 --save-dev
+
+
+module.exports = {
+  module: {
+    loaders: [
+      {
+        // Regex to which files it should search for
+        test: /\.es6$/,
+        exlude: /node_modules/,
+        loader: "babel-loader"
+      }
+    ]
+  },
+
+  // what kinds of files we can process without setting file extension.
+  // by default it will process files with a .js-extension but this overrides that
+  // default: extensions: ['', '.js'] (if overriding no need to specify empty string)
+  resolve: {
+    extensions: ['.js', '.es6']
+  }
+}
+
+
+
+jshint.
+a program that gives us warning if it finds errors in our code
+
+>npm install jshint jshint-loader --save-dev
+
+module: {
+  rules: [
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "jshint-loader"
+      }
+    ],
+}
